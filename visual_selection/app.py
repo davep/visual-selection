@@ -12,8 +12,13 @@ from textual import on, work
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal
 from textual.message import Message
-from textual.widgets import Button, Input, Label, Log
+from textual.widgets import Button, Input, Label, RichLog
 from textual.worker import get_current_worker
+
+##############################################################################
+# Rich imports.
+from rich.markup import escape
+from rich.text import Text
 
 CHARACTERS = [chr(n) for n in range(32, 126)]
 """The characters that will be used as the parts of the things to evolve."""
@@ -136,6 +141,11 @@ class Environment:
         return self
 
     @property
+    def landscape(self) -> list[str]:
+        """The fitness landscape."""
+        return list(self._landscape)
+
+    @property
     def best(self) -> tuple[Entity, Entity]:
         """A tuple of the best and next best entities found."""
         return self._best, self._next_best
@@ -178,7 +188,7 @@ class SelectionApp(App[None]):
             yield Label("0", id="iterations")
             yield Label("Best: ", classes="label")
             yield Label("", id="best")
-        yield Log()
+        yield RichLog()
 
     @on(Button.Pressed)
     @on(Input.Submitted)
@@ -197,6 +207,9 @@ class SelectionApp(App[None]):
     class WorldUpdate(Message):
         """Message sent when a world gets an update."""
 
+        environment: Environment
+        """The environment that the world exists in."""
+
         iterations: int
         """The number of iterations that have taken place."""
 
@@ -205,6 +218,22 @@ class SelectionApp(App[None]):
 
         next_best: Entity
         """The second-most-ft entity encountered so far."""
+
+        def diff(self) -> Text:
+            """Create a colour-coded diff of the best entity vs the fitness landscape.
+
+            Returns:
+                A rich `Text` object that highlights the differences.
+            """
+            colours = {True: "green", False: "red"}
+            return Text.from_markup(
+                "".join(
+                    f"[{colours[entity_base == landscape_base]}]{escape(entity_base)}[/]"
+                    for entity_base, landscape_base in zip(
+                        self.best.genome, self.environment.landscape
+                    )
+                )
+            )
 
     @dataclass
     class Finished(Message):
@@ -223,8 +252,8 @@ class SelectionApp(App[None]):
         self.query_one("#iterations", Label).update(str(event.iterations))
         self.query_one("#best", Label).update("".join(event.best.genome))
         if event.iterations == 0:
-            self.query_one(Log).clear()
-        self.query_one(Log).write_line("".join(event.best.genome))
+            self.query_one(RichLog).clear()
+        self.query_one(RichLog).write(event.diff())
 
     @on(Finished)
     def show_result(self, event: Finished) -> None:
@@ -248,12 +277,14 @@ class SelectionApp(App[None]):
         worker = get_current_worker()
         environment = Environment(target)
         iterations = 0
-        self.post_message(self.WorldUpdate(iterations, *environment.best))
+        self.post_message(self.WorldUpdate(environment, iterations, *environment.best))
         while not worker.is_cancelled and not environment.best_fit_found:
             environment.shit_happens()
             iterations += 1
             if (iterations % 1000) == 0 or environment.best_fit_found:
-                self.post_message(self.WorldUpdate(iterations, *environment.best))
+                self.post_message(
+                    self.WorldUpdate(environment, iterations, *environment.best)
+                )
         if environment.best_fit_found:
             self.post_message(self.Finished(iterations))
 
