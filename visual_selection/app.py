@@ -196,17 +196,28 @@ class SelectionApp(App[None]):
         """Message sent when a world gets an update."""
 
         iterations: int
+        """The number of iterations that have taken place."""
+
         best: Entity
+        """The most-fit entity encountered so far."""
+
         next_best: Entity
+        """The second-most-ft entity encountered so far."""
 
     @dataclass
     class Finished(Message):
         """Message sent when fitness has been achieved."""
 
         iterations: int
+        """The number of iterations it took."""
 
     @on(WorldUpdate)
     def show_progress(self, event: WorldUpdate) -> None:
+        """Show the current progress.
+
+        Args:
+            event: The update event.
+        """
         self.query_one("#iterations", Label).update(str(event.iterations))
         self.query_one("#best", Label).update("".join(event.best.genome))
         if event.iterations == 0:
@@ -215,6 +226,11 @@ class SelectionApp(App[None]):
 
     @on(Finished)
     def show_result(self, event: Finished) -> None:
+        """Show the final result.
+
+        Args:
+            event: The finishing result.
+        """
         self.notify(
             f"Target fitness match achieved after {event.iterations} iterations."
         )
