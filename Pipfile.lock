@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "311f124dc674f1e4250ec0f51d1014a6b9898cb1c0068ee8c6f2a0c7f9f716a4"
+            "sha256": "65b2a28c5e0d9f802e1ad6e4d191a34c84a6fb2d89d76a2c31cabeedbd006a5d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -59,6 +59,14 @@
             "markers": "python_version >= '3.7'",
             "version": "==0.1.2"
         },
+        "plotext": {
+            "hashes": [
+                "sha256:319a287baabeb8576a711995f973a2eba631c887aa6b0f33ab016f12c50ffebe",
+                "sha256:7364cf72e6c9bffaf96158340fd2e0058faf404edbbc1e7a2aed421c8638d475"
+            ],
+            "markers": "python_version >= '3.5'",
+            "version": "==5.2.8"
+        },
         "pygments": {
             "hashes": [
                 "sha256:13fc09fa63bc8d8671a6d247e1eb303c4b343eaee81d861f3404db2935653692",
@@ -83,6 +91,15 @@
             "index": "pypi",
             "markers": "python_version >= '3.7' and python_version < '4.0'",
             "version": "==0.40.0"
+        },
+        "textual-plotext": {
+            "hashes": [
+                "sha256:20d5c7ece7b9d308c649ddf48dbcbd73ee5d656c7aac85be87900ea8e3925ba6",
+                "sha256:9f3ef6bc5dad8886e1e1c6feb28cb544fc2d79200531e6afa3655babb639ffc4"
+            ],
+            "index": "pypi",
+            "markers": "python_version < '4.0' and python_full_version >= '3.7.2'",
+            "version": "==0.1.0"
         },
         "typing-extensions": {
             "hashes": [
@@ -267,12 +284,12 @@
         },
         "pylint": {
             "hashes": [
-                "sha256:81c6125637be216b4652ae50cc42b9f8208dfb725cdc7e04c48f6902f4dbdf40",
-                "sha256:9c90b89e2af7809a1697f6f5f93f1d0e518ac566e2ac4d2af881a69c13ad01ea"
+                "sha256:0d4c286ef6d2f66c8bfb527a7f8a629009e42c99707dec821a03e1b51a4c1496",
+                "sha256:60ed5f3a9ff8b61839ff0348b3624ceeb9e6c2a92c514d81c9cc273da3b6bcda"
             ],
             "index": "pypi",
             "markers": "python_full_version >= '3.8.0'",
-            "version": "==3.0.1"
+            "version": "==3.0.2"
         },
         "pyyaml": {
             "hashes": [
