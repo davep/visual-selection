@@ -137,10 +137,12 @@ class Environment:
 
     @property
     def best(self) -> tuple[Entity, Entity]:
+        """A tuple of the best and next best entities found."""
         return self._best, self._next_best
 
     @property
     def best_fit_found(self) -> bool:
+        """Has the best fit been found?"""
         return difference(self._best, self._landscape) == 0
 
 
