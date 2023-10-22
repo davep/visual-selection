@@ -16,6 +16,10 @@ from textual.widgets import Button, Input, Label, RichLog
 from textual.worker import get_current_worker
 
 ##############################################################################
+# Textual Plotext imports.
+from textual_plotext import PlotextPlot
+
+##############################################################################
 # Rich imports.
 from rich.markup import escape
 from rich.text import Text
@@ -151,6 +155,13 @@ class Environment:
         return self._best, self._next_best
 
     @property
+    def distances(self) -> tuple[int, int]:
+        """The distances of the best and next best entity, from the target."""
+        return difference(self._best, self._landscape), difference(
+            self._next_best, self._landscape
+        )
+
+    @property
     def best_fit_found(self) -> bool:
         """Has the best fit been found?"""
         return difference(self._best, self._landscape) == 0
@@ -177,6 +188,14 @@ class SelectionApp(App[None]):
     #status-bar .label {
         padding-left: 4;
     }
+
+    RichLog {
+        height: 2fr;
+    }
+
+    PlotextPlot {
+        height: 1fr;
+    }
     """
 
     def compose(self) -> ComposeResult:
@@ -189,6 +208,22 @@ class SelectionApp(App[None]):
             yield Label("Best: ", classes="label")
             yield Label("", id="best")
         yield RichLog()
+        yield PlotextPlot()
+
+    def on_mount(self) -> None:
+        """Set up the plot on mount."""
+        self._progress: list[tuple[int, int]] = []
+        plt = self.query_one(PlotextPlot).plt
+        plt.title("Distance over generations")
+        plt.xlabel("Generations")
+        plt.ylabel("Distance from target")
+        self.refresh_plot()
+
+    def refresh_plot(self) -> None:
+        """Refresh the data for the plot."""
+        plt = self.query_one(PlotextPlot).plt
+        plt.cld()
+        plt.plot(*zip(*self._progress), marker="braille")
 
     @on(Button.Pressed)
     @on(Input.Submitted)
@@ -252,8 +287,12 @@ class SelectionApp(App[None]):
         self.query_one("#iterations", Label).update(str(event.iterations))
         self.query_one("#best", Label).update(event.diff())
         if event.iterations == 0:
+            self._progress = []
             self.query_one(RichLog).clear()
         self.query_one(RichLog).write(event.diff())
+        self._progress.append((event.iterations, event.environment.distances[0]))
+        self.refresh_plot()
+        self.query_one(PlotextPlot).refresh()
 
     @on(Finished)
     def show_result(self, event: Finished) -> None:
