@@ -250,7 +250,7 @@ class SelectionApp(App[None]):
             event: The update event.
         """
         self.query_one("#iterations", Label).update(str(event.iterations))
-        self.query_one("#best", Label).update("".join(event.best.genome))
+        self.query_one("#best", Label).update(event.diff())
         if event.iterations == 0:
             self.query_one(RichLog).clear()
         self.query_one(RichLog).write(event.diff())
