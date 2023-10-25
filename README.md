@@ -17,7 +17,7 @@ important.
 Fast forward 15 years and I was thinking that a Textual version of the code
 might be fun.
 
-![Visual Selection](./visual-selection.png)
+![Visual Selection](https://raw.githubusercontent.com/davep/visual-selection/main/visual-selection.png)
 
 Turns out it *is* fun!
 
