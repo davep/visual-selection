@@ -191,15 +191,18 @@ class SelectionApp(App[None]):
 
     RichLog {
         height: 2fr;
+        background: $panel;
         border: round $background;
     }
 
     RichLog:focus {
-        border: wide $accent;
+        border: round $accent;
     }
 
     PlotextPlot {
         height: 1fr;
+        background: $panel;
+        color: $accent;
     }
     """
 
