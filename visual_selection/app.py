@@ -14,9 +14,10 @@ from typing_extensions import Self
 # Textual imports.
 from textual import on, work
 from textual.app import App, ComposeResult
+from textual.binding import Binding
 from textual.containers import Horizontal
 from textual.message import Message
-from textual.widgets import Button, Input, Label, ProgressBar, RichLog
+from textual.widgets import Button, Footer, Input, Label, ProgressBar, RichLog
 from textual.worker import get_current_worker
 
 ##############################################################################
@@ -220,6 +221,8 @@ class SelectionApp(App[None]):
     }
     """
 
+    BINDINGS = [Binding("ctrl+q", "quit", "Quit")]
+
     def __init__(self) -> None:
         """Initialise the application."""
         super().__init__()
@@ -238,6 +241,7 @@ class SelectionApp(App[None]):
         yield ProgressBar()
         yield RichLog()
         yield PlotextPlot()
+        yield Footer()
 
     def on_mount(self) -> None:
         """Set up the plot on mount."""
