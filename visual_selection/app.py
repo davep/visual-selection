@@ -210,6 +210,11 @@ class SelectionApp(App[None]):
     }
     """
 
+    def __init__(self) -> None:
+        """Initialise the application."""
+        super().__init__()
+        self._progress: list[tuple[int, int]] = []
+
     def compose(self) -> ComposeResult:
         with Horizontal(id="input"):
             yield Input(placeholder="Fitness landscape phrase")
@@ -224,7 +229,6 @@ class SelectionApp(App[None]):
 
     def on_mount(self) -> None:
         """Set up the plot on mount."""
-        self._progress: list[tuple[int, int]] = []
         plot = self.query_one(PlotextPlot)
         plot.light_mode_theme = "pro"
         plot.dark_mode_theme = "pro"
@@ -246,9 +250,10 @@ class SelectionApp(App[None]):
         if target := self.query_one(Input).value:
             self.run_world(target)
         else:
-            self.query_one(
-                Input
-            ).value = "Ca-Caw! Ca-Caw! Ca-Caw! Ah Ah Ee Ee Tookie Tookie! Tookie Tookie! Ca-Caw Ca-ca-caw-ca-caw-caw-caw! Ca-ca-caw!"
+            self.query_one(Input).value = (
+                "Ca-Caw! Ca-Caw! Ca-Caw! Ah Ah Ee Ee Tookie Tookie! "
+                "Tookie Tookie! Ca-Caw Ca-ca-caw-ca-caw-caw-caw! Ca-ca-caw!"
+            )
             self.start_world()
 
     @dataclass
