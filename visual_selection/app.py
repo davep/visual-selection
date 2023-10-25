@@ -226,7 +226,7 @@ class SelectionApp(App[None]):
     def __init__(self) -> None:
         """Initialise the application."""
         super().__init__()
-        self._progress: list[tuple[int, int]] = []
+        self._progress: list[tuple[int, float]] = []
 
     def compose(self) -> ComposeResult:
         """Compose the layout of the application."""
@@ -234,7 +234,7 @@ class SelectionApp(App[None]):
             yield Input(placeholder="Fitness landscape phrase")
             yield Button("Evolve!")
         with Horizontal(id="status-bar"):
-            yield Label("Iterations: ")
+            yield Label("Generations: ")
             yield Label("0", id="iterations")
             yield Label("Best: ", classes="label")
             yield Label("", id="best")
@@ -246,15 +246,18 @@ class SelectionApp(App[None]):
     def on_mount(self) -> None:
         """Set up the plot on mount."""
         plot = self.query_one(PlotextPlot)
-        plot.plt.title("Distance over generations")
+        plot.plt.title("Percentage match vs generations")
         plot.plt.xlabel("Generations")
-        plot.plt.ylabel("Distance from target")
+        plot.plt.ylabel("%age match")
+        plot.plt.ylim(0, 100)
+        plot.plt.yticks([0, 25, 50, 75, 100], ["0%", "25%", "50%", "75%", "100%"])
         self.refresh_plot()
 
     def refresh_plot(self) -> None:
         """Refresh the data for the plot."""
         plt = self.query_one(PlotextPlot).plt
         plt.cld()
+        plt.ylim(0, 100)
         plt.plot(*zip(*self._progress), marker="braille")
 
     @on(Button.Pressed)
@@ -324,7 +327,13 @@ class SelectionApp(App[None]):
             self.query_one(ProgressBar).total = len(event.environment.landscape)
             self.query_one(ProgressBar).progress = 0
         self.query_one(RichLog).write(event.diff())
-        self._progress.append((event.iterations, event.environment.distances[0]))
+        self._progress.append(
+            (
+                event.iterations,
+                (100.0 / len(event.environment.landscape))
+                * (len(event.environment.landscape) - event.environment.distances[0]),
+            )
+        )
         self.query_one(ProgressBar).progress = (
             len(event.environment.landscape) - event.environment.distances[0]
         )
@@ -339,7 +348,7 @@ class SelectionApp(App[None]):
             event: The finishing result.
         """
         self.notify(
-            f"Target fitness match achieved after {event.iterations} iterations."
+            f"Target fitness match achieved after {event.iterations} generations."
         )
         self.bell()
 
