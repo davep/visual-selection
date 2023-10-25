@@ -16,7 +16,7 @@ from textual import on, work
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal
 from textual.message import Message
-from textual.widgets import Button, Input, Label, RichLog
+from textual.widgets import Button, Input, Label, ProgressBar, RichLog
 from textual.worker import get_current_worker
 
 ##############################################################################
@@ -208,6 +208,16 @@ class SelectionApp(App[None]):
         background: $panel;
         color: $accent;
     }
+
+    ProgressBar {
+        background: $panel;
+        width: 1fr;
+        padding: 0 1 0 1;
+    }
+
+    ProgressBar Bar {
+        width: 1fr;
+    }
     """
 
     def __init__(self) -> None:
@@ -225,6 +235,7 @@ class SelectionApp(App[None]):
             yield Label("0", id="iterations")
             yield Label("Best: ", classes="label")
             yield Label("", id="best")
+        yield ProgressBar()
         yield RichLog()
         yield PlotextPlot()
 
@@ -308,8 +319,13 @@ class SelectionApp(App[None]):
         if event.iterations == 0:
             self._progress = []
             self.query_one(RichLog).clear()
+            self.query_one(ProgressBar).total = len(event.environment.landscape)
+            self.query_one(ProgressBar).progress = 0
         self.query_one(RichLog).write(event.diff())
         self._progress.append((event.iterations, event.environment.distances[0]))
+        self.query_one(ProgressBar).progress = (
+            len(event.environment.landscape) - event.environment.distances[0]
+        )
         self.refresh_plot()
         self.query_one(PlotextPlot).refresh()
 
