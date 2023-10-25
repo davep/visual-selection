@@ -246,11 +246,10 @@ class SelectionApp(App[None]):
         if target := self.query_one(Input).value:
             self.run_world(target)
         else:
-            self.notify(
-                "Please provide a target phrase as the fitness landscape",
-                severity="error",
-            )
-            self.bell()
+            self.query_one(
+                Input
+            ).value = "Ca-Caw! Ca-Caw! Ca-Caw! Ah Ah Ee Ee Tookie Tookie! Tookie Tookie! Ca-Caw Ca-ca-caw-ca-caw-caw-caw! Ca-ca-caw!"
+            self.start_world()
 
     @dataclass
     class WorldUpdate(Message):
