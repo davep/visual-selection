@@ -322,18 +322,22 @@ class SelectionApp(App[None]):
         self.query_one("#iterations", Label).update(str(event.iterations))
         self.query_one("#best", Label).update(event.diff())
         if event.iterations == 0:
-            self._progress = []
+            self._progress = [(0, 0)]
             self.query_one(RichLog).clear()
             self.query_one(ProgressBar).total = len(event.environment.landscape)
             self.query_one(ProgressBar).progress = 0
-        self.query_one(RichLog).write(event.diff())
-        self._progress.append(
-            (
-                event.iterations,
-                (100.0 / len(event.environment.landscape))
-                * (len(event.environment.landscape) - event.environment.distances[0]),
+        else:
+            self._progress.append(
+                (
+                    event.iterations,
+                    (100.0 / len(event.environment.landscape))
+                    * (
+                        len(event.environment.landscape)
+                        - event.environment.distances[0]
+                    ),
+                )
             )
-        )
+        self.query_one(RichLog).write(event.diff())
         self.query_one(ProgressBar).progress = (
             len(event.environment.landscape) - event.environment.distances[0]
         )
