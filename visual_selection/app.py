@@ -1,10 +1,14 @@
 """Simple evolution by mutation in a fitness landscape example."""
 
 ##############################################################################
+# Be future-proof.
+from __future__ import annotations
+
+##############################################################################
 # Python imports.
 from dataclasses import dataclass
 from random import choices, randint
-from typing import Self
+from typing_extensions import Self
 
 ##############################################################################
 # Textual imports.
