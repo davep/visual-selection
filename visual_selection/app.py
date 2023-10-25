@@ -216,6 +216,7 @@ class SelectionApp(App[None]):
         self._progress: list[tuple[int, int]] = []
 
     def compose(self) -> ComposeResult:
+        """Compose the layout of the application."""
         with Horizontal(id="input"):
             yield Input(placeholder="Fitness landscape phrase")
             yield Button("Evolve!")
