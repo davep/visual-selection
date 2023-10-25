@@ -242,8 +242,6 @@ class SelectionApp(App[None]):
     def on_mount(self) -> None:
         """Set up the plot on mount."""
         plot = self.query_one(PlotextPlot)
-        plot.light_mode_theme = "pro"
-        plot.dark_mode_theme = "pro"
         plot.plt.title("Distance over generations")
         plot.plt.xlabel("Generations")
         plot.plt.ylabel("Distance from target")
