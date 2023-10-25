@@ -249,13 +249,12 @@ class SelectionApp(App[None]):
         plot.plt.title("Percentage match vs generations")
         plot.plt.xlabel("Generations")
         plot.plt.ylabel("%age match")
-        plot.plt.ylim(0, 100)
-        plot.plt.yticks([0, 25, 50, 75, 100], ["0%", "25%", "50%", "75%", "100%"])
 
     def refresh_plot(self) -> None:
         """Refresh the data for the plot."""
         plot = self.query_one(PlotextPlot)
         plot.plt.cld()
+        plot.plt.yticks([0, 25, 50, 75, 100], ["0%", "25%", "50%", "75%", "100%"])
         plot.plt.ylim(0, 100)
         plot.plt.plot(*zip(*self._progress), marker="braille")
         plot.refresh()
