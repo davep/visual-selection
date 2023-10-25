@@ -1,5 +1,7 @@
 # Visual Selection
 
+## Introduction
+
 Many moons ago, back in 2008, while in a debate on an atheist-oriented phpBB
 site (as was the fashion back then), I ended up writing [a couple of
 scripts](https://github.com/davep/selection), in ruby, to illustrate a point
@@ -20,5 +22,16 @@ might be fun.
 ![Visual Selection](https://raw.githubusercontent.com/davep/visual-selection/main/visual-selection.png)
 
 Turns out it *is* fun!
+
+## Installation
+
+If you want to play with this, the best method is going to be to install
+with `pipx`:
+
+```sh
+$ pipx install visual-selection
+```
+
+then simply run `visual-selection`.
 
 [//]: # (README.md ends here)
