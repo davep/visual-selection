@@ -12,6 +12,7 @@ pre-commit = "*"
 black = "*"
 mypy = "*"
 pylint = "*"
+build = "*"
 
 [requires]
 python_version = "3.12"
