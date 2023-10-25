@@ -16,6 +16,7 @@ from textual import on, work
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal
+from textual.events import Resize
 from textual.message import Message
 from textual.widgets import Button, Footer, Input, Label, ProgressBar, RichLog
 from textual.worker import get_current_worker
@@ -251,7 +252,17 @@ class SelectionApp(App[None]):
         plot.plt.ylabel("%age match")
         plot.plt.ylim(0, 100)
         plot.plt.yticks([0, 25, 50, 75, 100], ["0%", "25%", "50%", "75%", "100%"])
-        self.refresh_plot()
+
+    @on(Resize)
+    def _relayout_plot(self) -> None:
+        """Force the plot to fully redraw on resize.
+
+        I don't think this should be necessary. I need to look at
+        textual-plotext again and see why this isn't happen. A resize should
+        cause a call to render, I would have thought; and it looks like it
+        isn't.
+        """
+        self.query_one(PlotextPlot).refresh(layout=True)
 
     def refresh_plot(self) -> None:
         """Refresh the data for the plot."""
