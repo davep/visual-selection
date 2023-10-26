@@ -94,12 +94,12 @@
         },
         "textual-plotext": {
             "hashes": [
-                "sha256:1b60274fa74e44382009e0f0b964ecc8f6a7827a13eab13fa8eb03444153e16c",
-                "sha256:dc3f377e32f344a6d501062fde012b281f88f1559020ace054f290e24dd85f43"
+                "sha256:a1055cf50fac9af11f56b5ff73442570eb5fd051e513b20aeb8b15a6a2abfcff",
+                "sha256:bc6f2d75d8e20dda6321f8254dc3decda8f41f60e6e70a3ddd83b652b890c081"
             ],
             "index": "pypi",
             "markers": "python_version < '4.0' and python_full_version >= '3.7.2'",
-            "version": "==0.2.0"
+            "version": "==0.2.1"
         },
         "typing-extensions": {
             "hashes": [
