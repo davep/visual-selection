@@ -15,7 +15,7 @@ from typing_extensions import Final, Self
 from textual import on, work
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.containers import Horizontal
+from textual.containers import Horizontal, Vertical
 from textual.message import Message
 from textual.widgets import Button, Footer, Input, Label, ProgressBar, RichLog
 from textual.worker import get_current_worker
@@ -69,12 +69,13 @@ class Entity:
 
 
 ##############################################################################
-def breed(first: Entity, second: Entity) -> Entity:
+def breed(first: Entity, second: Entity, mutations: int) -> Entity:
     """Breed two entities, giving a third.
 
     Args:
         first: The first parent.
         second: The second parent.
+        mutations: The number of mutations to apply.
 
     Returns:
         The offspring of the pairing.
@@ -87,7 +88,10 @@ def breed(first: Entity, second: Entity) -> Entity:
     start = randint(0, len(first.genome) - 1)
     end = randint(start, len(first.genome))
     new_genome[start:end] = second.genome[start:end]
-    return Entity(new_genome).mutate()
+    child = Entity(new_genome)
+    for _ in range(mutations):
+        child.mutate()
+    return child
 
 
 ##############################################################################
@@ -116,13 +120,14 @@ def difference(first: Entity | str, second: Entity | str) -> int:
 class Environment:
     """The environment in which the evolution will take place."""
 
-    def __init__(self, landscape: str) -> None:
+    def __init__(self, landscape: str, mutations: int) -> None:
         """Initialise the landscape.
 
         Args:
             landscape: The target string, the 'best' fit for the landscape.
         """
         self._landscape = landscape
+        self._mutations = mutations
         self._best = Entity(len(self._landscape))
         self._next_best = Entity(len(self._landscape))
 
@@ -130,7 +135,7 @@ class Environment:
         """No. I'm, I'm simply saying that life, uh... finds a way."""
 
         # Breed the two most-fit parents and get a new child.
-        child = breed(self._best, self._next_best)
+        child = breed(self._best, self._next_best, self._mutations)
 
         # Work out how different the family is from the landscape.
         child_score = difference(child, self._landscape)
@@ -173,6 +178,28 @@ class Environment:
 
 
 ##############################################################################
+class IntInput(Input):
+    """A simple integer input widget."""
+
+    def _validate_value(self, value: str) -> str:
+        """Validate the value and ensure it's an integer input.
+
+        Args:
+            value: The value to validated.
+
+        Returns:
+            The validated value.
+        """
+        if value.strip():
+            try:
+                _ = int(value)
+            except ValueError:
+                self.app.bell()
+                value = self.value
+        return value
+
+
+##############################################################################
 class SelectionApp(App[None]):
     """Simple application to show off mutation in a fitness landscape."""
 
@@ -182,8 +209,18 @@ class SelectionApp(App[None]):
         background: $panel;
     }
 
-    #input > Input {
+    #landscape-input {
         width: 1fr;
+        height: auto;
+    }
+
+    #mutations-input {
+        width: 25;
+        height: auto;
+    }
+
+    #input Label {
+        padding-left: 1;
     }
 
     #status-bar {
@@ -192,6 +229,10 @@ class SelectionApp(App[None]):
 
     #status-bar .label {
         padding-left: 4;
+    }
+
+    Button {
+        margin-top: 1;
     }
 
     RichLog {
@@ -231,7 +272,12 @@ class SelectionApp(App[None]):
     def compose(self) -> ComposeResult:
         """Compose the layout of the application."""
         with Horizontal(id="input"):
-            yield Input(placeholder="Fitness landscape phrase")
+            with Vertical(id="landscape-input"):
+                yield Label("Fitness landscape phrase:")
+                yield Input(id="fitness-phrase")
+            with Vertical(id="mutations-input"):
+                yield Label("Mutations/generation:")
+                yield IntInput("1", id="mutations-per-generation")
             yield Button("Evolve!")
         with Horizontal(id="status-bar"):
             yield Label("Generations: ")
@@ -263,14 +309,16 @@ class SelectionApp(App[None]):
     @on(Input.Submitted)
     def start_world(self) -> None:
         """Kick off a new evolution."""
-        if target := self.query_one(Input).value:
-            self.run_world(target)
-        else:
-            self.query_one(Input).value = (
+        if not (target := self.query_one("#fitness-phrase", Input).value):
+            self.query_one("#fitness-phrase", Input).value = target = (
                 "Ca-Caw! Ca-Caw! Ca-Caw! Ah Ah Ee Ee Tookie Tookie! "
                 "Tookie Tookie! Ca-Caw Ca-ca-caw-ca-caw-caw-caw! Ca-ca-caw!"
             )
-            self.start_world()
+        try:
+            mutations = int(self.query_one("#mutations-per-generation", Input).value)
+        except ValueError:
+            mutations = 1
+        self.run_world(target, max(1, mutations))
 
     @dataclass
     class WorldUpdate(Message):
@@ -355,14 +403,15 @@ class SelectionApp(App[None]):
         self.bell()
 
     @work(thread=True, exclusive=True)
-    def run_world(self, target: str) -> None:
+    def run_world(self, target: str, mutations: int) -> None:
         """Run the world.
 
         Args:
             target: The target landscape fitness phrase.
+            mutations: The number of mutations per generation.
         """
         worker = get_current_worker()
-        environment = Environment(target)
+        environment = Environment(target, mutations)
         iterations = 0
         self.post_message(self.WorldUpdate(environment, iterations, *environment.best))
         while not worker.is_cancelled and not environment.best_fit_found:
