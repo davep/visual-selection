@@ -2,7 +2,7 @@
 
 ## v0.2.0
 
-**Released: WiP**
+**Released: 2023-10-28**
 
 - Added support for adjusting the number of mutations per generation.
 
