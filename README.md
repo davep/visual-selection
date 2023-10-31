@@ -21,6 +21,8 @@ might be fun.
 
 ![Visual Selection](https://raw.githubusercontent.com/davep/visual-selection/main/visual-selection.png)
 
+This is a version of
+[`selection`](https://github.com/davep/selection/blob/master/selection).
 Turns out it *is* fun!
 
 ## Installation
