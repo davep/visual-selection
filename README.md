@@ -27,13 +27,26 @@ Turns out it *is* fun!
 
 ## Installation
 
-If you want to play with this, the best method is going to be to install
-with `pipx`:
+### pipx
+
+The package can be installed using [`pipx`](https://pypa.github.io/pipx/):
 
 ```sh
 $ pipx install visual-selection
 ```
 
-then simply run `visual-selection`.
+### Homebrew
+
+The package can be installed using Homebrew. Use the following commands to
+install:
+
+```sh
+$ brew tap davep/homebrew
+$ brew install visual-selection
+```
+
+## Running
+
+Once installed run the `visual-selection` command.
 
 [//]: # (README.md ends here)
