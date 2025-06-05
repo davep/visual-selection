@@ -6,18 +6,39 @@ authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
 ]
 dependencies = [
-    "textual>=0.40.0",
+    "textual>=3.3.0",
     "textual-plotext>=0.2.1",
 ]
 readme = "README.md"
-requires-python = ">=3.8"
-license = { text = "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)" }
+requires-python = ">=3.10"
+license = { text = "GNU General Public License v3 or later (GPLv3+)" }
+keywords = [
+    "evolution",
+    "science",
+    "example",
+    "illustration",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Terminals",
+    "Typing :: Typed",
+]
 
 [project.scripts]
 visual-selection = "visual_selection.__main__:run"
 
 [build-system]
-requires = ["hatchling"]
+# https://github.com/astral-sh/rye/issues/1446
+requires = ["hatchling==1.26.3", "hatch-vcs"]
+# requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.rye]
@@ -34,3 +55,8 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/visual_selection"]
+
+[tool.pyright]
+venvPath="."
+venv=".venv"
+exclude=[".venv"]
