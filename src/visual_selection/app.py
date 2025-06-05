@@ -8,7 +8,11 @@ from __future__ import annotations
 # Python imports.
 from dataclasses import dataclass
 from random import choices, randint
-from typing_extensions import Final, Self
+
+##############################################################################
+# Rich imports.
+from rich.markup import escape
+from rich.text import Text
 
 ##############################################################################
 # Textual imports.
@@ -25,9 +29,8 @@ from textual.worker import get_current_worker
 from textual_plotext import PlotextPlot
 
 ##############################################################################
-# Rich imports.
-from rich.markup import escape
-from rich.text import Text
+# Typing extension imports.
+from typing_extensions import Final, Self
 
 CHARACTERS: Final[list[str]] = [chr(n) for n in range(32, 126)]
 """The characters that will be used as the parts of the things to evolve."""
