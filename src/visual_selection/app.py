@@ -207,9 +207,12 @@ class SelectionApp(App[None]):
     """Simple application to show off mutation in a fitness landscape."""
 
     CSS = """
+    Screen {
+        background: $panel;
+    }
+
     #input, #status-bar {
         height: auto;
-        background: $panel;
     }
 
     #landscape-input {
@@ -240,22 +243,20 @@ class SelectionApp(App[None]):
 
     RichLog {
         height: 2fr;
-        background: $panel;
-        border: round $background;
+        border: $border-blurred;
+        background: transparent;
     }
 
     RichLog:focus {
-        border: round $accent;
+        border: $border;
     }
 
     PlotextPlot {
         height: 1fr;
-        background: $panel;
-        color: $accent;
+        background: transparent;
     }
 
     ProgressBar {
-        background: $panel;
         width: 1fr;
         padding: 0 1 0 1;
     }
@@ -287,7 +288,7 @@ class SelectionApp(App[None]):
             yield Label("0", id="iterations")
             yield Label("Best: ", classes="label")
             yield Label("", id="best")
-        yield ProgressBar()
+        yield ProgressBar(show_eta=False)
         yield RichLog()
         yield PlotextPlot()
         yield Footer()
@@ -295,6 +296,7 @@ class SelectionApp(App[None]):
     def on_mount(self) -> None:
         """Set up the plot on mount."""
         plot = self.query_one(PlotextPlot)
+        plot.theme = "textual-clear"
         plot.plt.title("Percentage match vs generations")
         plot.plt.xlabel("Generations")
         plot.plt.ylabel("%age match")
