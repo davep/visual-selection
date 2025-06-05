@@ -268,6 +268,8 @@ class SelectionApp(App[None]):
 
     BINDINGS = [Binding("ctrl+q", "quit", "Quit")]
 
+    ENABLE_COMMAND_PALETTE = False
+
     def __init__(self) -> None:
         """Initialise the application."""
         super().__init__()
