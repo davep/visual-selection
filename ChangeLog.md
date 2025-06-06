@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.0.0
+
+**Released: 2025-06-06**
+
+- Tweaked to work with more recent versions of Textual.
+
 ## v0.2.0
 
 **Released: 2023-10-28**
