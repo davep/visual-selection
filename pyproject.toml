@@ -1,6 +1,6 @@
 [project]
 name = "visual-selection"
-version = "0.2.1"
+version = "1.0.0"
 description = "A simple illustration of mutation aiding evolution"
 authors = [
     { name = "Dave Pearson", email = "davep@davep.org" }
